@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {MAT_FORM_FIELD, MatFormField, MatFormFieldControl} from '@angular/material/form-field';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'health-monitor';
+  title = 'We care - health monitoring system';
 }

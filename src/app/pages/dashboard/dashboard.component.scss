@@ -1,0 +1,18 @@
+$header-height: 70px;
+
+.mat-grid-list {
+  height: calc(100% - $header-height);
+}
+
+.header {
+  height: $header-height !important;
+  flex: 1 1 auto;
+}
+
+.pr-10 {
+  padding-right: 10px;
+}
+
+.pt-5 {
+  padding-top: 5px;
+}

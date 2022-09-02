@@ -1,17 +1,17 @@
 # HealthMonitor
 
-This is Health monitoring system that displays your Blood pressure related values according to date.
+This is Health monitoring system that displays your Blood pressure. Data is presented as a bar chart where different measurements are displayed.
 
 This system has two pages
 
 - Landing page which includes login part
-- Main dashboard page where you can see your statistics
+- Main dashboard page where you can see your measurements
 
-Data is been updated every 5 seconds to see up-to-date resutls.
+Data is been updated every 5 seconds to view up-to-date resutls. Raw values are converted to logarithmic values for better analysis.
 
-Chart is configurable and you are allowed to change values to view it.
+Chart is configurable and you are allowed to change y-axis min and max values for better presentation.
 
-Currently, there is not any backend connected to the system. I have used json files to fetch data.
+Currently, there is not any backend connected to the system. Json files have been used to fetch data.
 
 ## Development server
 

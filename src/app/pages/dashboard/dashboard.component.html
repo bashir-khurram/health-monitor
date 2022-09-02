@@ -9,6 +9,12 @@
   </button>
 </mat-toolbar>
 <div class="filters">
+  <div class="data-type-selection">
+    <mat-radio-group aria-label="Select data presentation" [(ngModel)]="dataType" style="padding-right: 5px;" (change)="changeDataType()" >
+      <mat-radio-button [value]="'simple'" color="primary">Actual values</mat-radio-button>
+      <mat-radio-button [value]="'log'" color="primary">Logrithmic values</mat-radio-button>
+    </mat-radio-group>
+  </div>
   <mat-form-field appearance="fill" class="input-field">
     <mat-label>Min</mat-label>
     <input type="number" matInput placeholder="Minimum value" [(ngModel)]="minValue">
@@ -21,7 +27,7 @@
     <mat-label>Interval</mat-label>
     <input type="number" matInput placeholder="Interval" [(ngModel)]="interval">
   </mat-form-field>
-  <button mat-mini-fab color="primary" aria-label="Change chart settings" style="top: -5px" (click)="updateConfig()">
+  <button mat-mini-fab color="primary" aria-label="Change chart settings" style="top: -5px" (click)="updateConfig()" matTooltip="Apply changes">
     <mat-icon>done</mat-icon>
   </button>
 </div>

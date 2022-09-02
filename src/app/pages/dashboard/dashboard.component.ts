@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import Chart from 'chart.js/auto';
 import { Observable, tap, timeout, timer } from 'rxjs';
-import { CHART_TIMEOUT_SECONDS, UserData } from 'src/app/interfaces';
+import { CHART_COLORS, CHART_TIMEOUT_SECONDS, UserData } from 'src/app/interfaces';
 import { AuthService } from 'src/app/services/auth.service';
 import { BasicUtils } from 'src/app/utils/basic-utils';
 
@@ -17,6 +17,8 @@ export class DashboardComponent implements AfterViewInit {
   minValue: number = 0;
   maxValue: number = 0;
   interval: number = 0;
+  dataType: 'simple' | 'log' = 'log';
+
   private chart: Chart;
   private updateRequired: boolean = false;
   private userData: UserData[] = [];
@@ -56,19 +58,42 @@ export class DashboardComponent implements AfterViewInit {
     this.chart.update();
   }
 
-  updateData(): Observable<any> {
+  changeDataType(): void {
+    this.userData = [];
+    this.updateData().subscribe(() => {
+      switch (this.dataType) {
+        case  'simple':
+          (this.chart.options.scales as any) ['y']['min'] = this.minValue = 0;
+          (this.chart.options.scales as any) ['y']['max'] = this.maxValue =
+            Math.max(...this.data.bpDelta, ...this.data.dias, ...this.data.sys, ...this.data.pulse);
+          (this.chart.options.scales as any) ['y']['ticks']['stepSize'] = this.interval = 10;
+          break;
+        case 'log':
+          (this.chart.options.scales as any) ['y']['min'] = this.minValue = 0;
+          (this.chart.options.scales as any) ['y']['max'] = this.maxValue =
+            Math.max(...this.data.bpDelta, ...this.data.dias, ...this.data.sys, ...this.data.pulse);
+          (this.chart.options.scales as any) ['y']['ticks']['stepSize'] = this.interval = 0.5;
+          break;
+      }
+      this.updateChart();
+    });
+
+  }
+
+  private updateData(): Observable<any> {
     return this.httpClient.get('assets/dummy-data/user-data.json').pipe( tap(
       data => {
         if (Array.isArray(data)) {
           const newData = data.filter(userData => userData.user === this.authService.getCurrentUser()?.email) as UserData[];
           if (newData.length > 0 &&  JSON.stringify(newData) !== JSON.stringify(this.userData)) {
+            this.resetData();
             this.userData = newData;
             this.userData.forEach((data, index) => {
-              this.data.date[index] = data.year + '-' + data.month + '-' + data.day;
-              this.data.bpDelta[index] = data.bpDelta;
-              this.data.dias[index] = data.dias;
-              this.data.sys[index] = data.sys;
-              this.data.pulse[index] = data.pulse;
+              this.data.date.push(data.year + '-' + data.month + '-' + data.day) ;
+              this.data.bpDelta.push(this.dataType === 'log'? Math.log(data.bpDelta): data.bpDelta);
+              this.data.dias.push(this.dataType === 'log'? Math.log(data.dias): data.dias);
+              this.data.sys.push(this.dataType === 'log'? Math.log(data.sys): data.sys);
+              this.data.pulse.push(this.dataType === 'log'? Math.log(data.pulse): data.pulse);
             });
             this.updateRequired = true;
           } else {
@@ -79,26 +104,26 @@ export class DashboardComponent implements AfterViewInit {
     ));
   }
 
-  createChart(): void {
+  private createChart(): void {
     this.chart = new Chart("canvas", {
       type: 'bar',
       data: {
         labels: this.data.date,
-        datasets: [
-          BasicUtils.getDataSetForChart('Bp Delta', this.data.bpDelta, 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 1)'),
-          BasicUtils.getDataSetForChart('Dias', this.data.dias, 'rgba(54, 162, 235, 0.2)', 'rgba(54, 162, 235, 1)'),
-          BasicUtils.getDataSetForChart('Sys', this.data.sys, 'rgba(255, 206, 86, 0.2)', 'rgba(255, 206, 86, 1)'),
-          BasicUtils.getDataSetForChart('Pulse', this.data.pulse, 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 1)'),
-        ],
+        datasets: this.getChartDataset(),
       },
       options: {
         responsive: true,
         scales: {
+          x: {
+            grid: {
+              display: false
+            }
+          },
           y: {
-            min: 20,
-            max: 200,
+            min: 0,
+            max: Math.max(...this.data.bpDelta, ...this.data.dias, ...this.data.sys, ...this.data.pulse),
             ticks: {
-              stepSize: 10
+              stepSize: 0.5
             }
           },
         },
@@ -111,15 +136,30 @@ export class DashboardComponent implements AfterViewInit {
     this.interval = (this.chart.options.scales as any) ['y']['ticks']['stepSize'];
   }
 
-  updateChart(): void {
+  private updateChart(): void {
     this.chart.data.labels = this.data.date;
-    this.chart.data.datasets = [
-      BasicUtils.getDataSetForChart('Bp Delta', this.data.bpDelta, 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 1)'),
-      BasicUtils.getDataSetForChart('Dias', this.data.dias, 'rgba(54, 162, 235, 0.2)', 'rgba(54, 162, 235, 1)'),
-      BasicUtils.getDataSetForChart('Sys', this.data.sys, 'rgba(255, 206, 86, 0.2)', 'rgba(255, 206, 86, 1)'),
-      BasicUtils.getDataSetForChart('Pulse', this.data.pulse, 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 1)'),
-    ];
+    this.chart.data.datasets = this.getChartDataset();
     this.chart.update();
+  }
+
+  private getChartDataset(): any[] {
+    return [
+      BasicUtils.getDataSetForChart('Bp Delta', this.data.bpDelta, CHART_COLORS.blue.bkgrndColor, CHART_COLORS.blue.borderColor),
+      BasicUtils.getDataSetForChart('Dias', this.data.dias, CHART_COLORS.red.bkgrndColor, CHART_COLORS.red.borderColor),
+      BasicUtils.getDataSetForChart('Sys', this.data.sys, CHART_COLORS.purple.bkgrndColor, CHART_COLORS.purple.borderColor),
+      BasicUtils.getDataSetForChart('Pulse', this.data.pulse, CHART_COLORS.orange.bkgrndColor, CHART_COLORS.orange.borderColor)
+    ];
+  }
+
+  private resetData(): void {
+    this.data = {
+      bpDelta: [],
+      dias: [],
+      sys: [],
+      pulse: [],
+      date: []
+    };
+    this.userData = [];
   }
 
 }

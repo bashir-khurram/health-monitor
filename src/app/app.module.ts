@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -38,6 +39,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatGridListModule,
     MatIconModule,
     MatInputModule,
+    MatRadioModule,
     MatSnackBarModule,
     MatToolbarModule,
     MatTooltipModule

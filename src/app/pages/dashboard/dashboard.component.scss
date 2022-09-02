@@ -1,12 +1,23 @@
 $header-height: 70px;
+$filters-height: 50px;
 
 .mat-grid-list {
-  height: calc(100% - $header-height);
+  height: calc(100% - $header-height - $filters-height);
 }
 
 .header {
   height: $header-height !important;
   flex: 1 1 auto;
+}
+
+.filters {
+  height: $filters-height !important;
+  font-size: 12px;
+  text-align: center;
+}
+
+.input-field {
+  padding-right: 5px;
 }
 
 .pr-10 {

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { User } from '../interfaces/user';
+import { KEY_USER_TOKEN, User } from '../interfaces';
 import { LocalStorageUtils } from '../utils/local-storage-utils';
 
 export const loadDataForAuthService = (service: AuthService) => () =>  service.loadValidUsers();
@@ -11,36 +11,42 @@ export const loadDataForAuthService = (service: AuthService) => () =>  service.l
 })
 export class AuthService {
 
-  static KEY_TOKEN = 'TOKEN';
-  validUsers: User[] = [];
+  private validUsers: User[] = [];
+  private currentUser: User | undefined;
 
   constructor(private httpClient: HttpClient) { }
 
   login(user: User): boolean {
-    let validUser = this.validUsers.find(u => u.email === user.email && u.password === user.password);
-    if (validUser) {
-      LocalStorageUtils.set(AuthService.KEY_TOKEN, validUser.token);
+    this.currentUser = this.validUsers.find(u => u.email === user.email && u.password === user.password);
+    if (this.currentUser) {
+      LocalStorageUtils.set(KEY_USER_TOKEN, this.currentUser.token);
       return true;
     }
     return false;
   }
 
   logout(): void {
-    LocalStorageUtils.remove(AuthService.KEY_TOKEN);
+    LocalStorageUtils.remove(KEY_USER_TOKEN);
   }
 
   isLoggedIn(): boolean {
-    let token = LocalStorageUtils.get(AuthService.KEY_TOKEN);
-    if (this.validUsers.find(user => user.token === token)) {
+    let token = LocalStorageUtils.get(KEY_USER_TOKEN);
+    this.currentUser = this.validUsers.find(user => user.token === token);
+    if (this.currentUser) {
       return true;
     }
     return false;
   }
 
   loadValidUsers(): Observable<any> {
-    return this.httpClient.get('assets/dummy-data/login.json').pipe(tap(
+    return this.httpClient.get('assets/dummy-data/login.json')   // can also use post against real service
+    .pipe(tap(
       data => this.validUsers = data as User[]
     ));
+  }
+
+  getCurrentUser(): User | undefined {
+    return this.currentUser;
   }
 
 }

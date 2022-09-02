@@ -8,6 +8,25 @@
     <mat-icon aria-hidden="log out" aria-label="Log out">logout</mat-icon>
   </button>
 </mat-toolbar>
+<div class="filters">
+  <mat-form-field appearance="fill" class="input-field">
+    <mat-label>Min</mat-label>
+    <input type="number" matInput placeholder="Minimum value" [(ngModel)]="minValue">
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="input-field">
+    <mat-label>Max</mat-label>
+    <input type="number" matInput placeholder="Maximum value" [(ngModel)]="maxValue">
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="input-field">
+    <mat-label>Interval</mat-label>
+    <input type="number" matInput placeholder="Interval" [(ngModel)]="interval">
+  </mat-form-field>
+  <button mat-mini-fab color="primary" aria-label="Change chart settings" style="top: -5px" (click)="updateConfig()">
+    <mat-icon>done</mat-icon>
+  </button>
+</div>
 <mat-grid-list cols="1" class="column-gridList" rowHeight="fit">
-  <mat-grid-tile>1</mat-grid-tile>
+  <mat-grid-tile style="padding: 0px; margin: 0px; overflow: auto">
+    <canvas id="canvas" #canvas style="height:100%; width:100%; margin: 20px 20px;"></canvas>
+  </mat-grid-tile>
 </mat-grid-list>

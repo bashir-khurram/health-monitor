@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { KEY_USER_TOKEN, User } from '../interfaces';
 import { LocalStorageUtils } from '../utils/local-storage-utils';
@@ -14,7 +15,10 @@ export class AuthService {
   private validUsers: User[] = [];
   private currentUser: User | undefined;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(
+    private httpClient: HttpClient,
+    private router: Router
+  ) { }
 
   login(user: User): boolean {
     this.currentUser = this.validUsers.find(u => u.email === user.email && u.password === user.password);
@@ -27,6 +31,7 @@ export class AuthService {
 
   logout(): void {
     LocalStorageUtils.remove(KEY_USER_TOKEN);
+    this.router.navigate(['/']);
   }
 
   isLoggedIn(): boolean {

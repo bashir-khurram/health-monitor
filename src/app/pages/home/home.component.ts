@@ -25,6 +25,9 @@ export class HomeComponent implements OnInit {
         '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,63}$')]),
       password: new FormControl('', [Validators.required, Validators.minLength(8)])
     });
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/dashboard']);
+    }
   }
 
   onSubmit(): void {

@@ -36,7 +36,7 @@ export class DashboardComponent implements AfterViewInit {
 
   constructor(
     private httpClient: HttpClient,
-    private authService: AuthService
+    public authService: AuthService
     ) {
     }
 

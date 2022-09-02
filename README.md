@@ -1,27 +1,28 @@
 # HealthMonitor
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.1.
+This is Health monitoring system that displays your Blood pressure related values according to date.
+
+This system has two pages
+
+- Landing page which includes login part
+- Main dashboard page where you can see your statistics
+
+Data is been updated every 5 seconds to see up-to-date resutls.
+
+Chart is configurable and you are allowed to change values to view it.
+
+Currently, there is not any backend connected to the system. I have used json files to fetch data.
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Run `npm install` to install npm packages.  
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`.
 
-## Code scaffolding
+## Login datails
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Here are login details to enter the system
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- Email `user1@test.com` Password `11111111`
+- Email `user2@test.com` Password `22222222`
+- Email `user3@test.com` Password `33333333`
+- Email `user4@test.com` Password `44444444`
